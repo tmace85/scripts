@@ -23,7 +23,7 @@ while True:
             if data:
                 print >>sys.stderr, 'sending data back to the client'
                 connection.sendall(data)
-		sleep 5;
+		sleep (5);
             else:
                 print >>sys.stderr, 'no more data from', client_address
                 break
