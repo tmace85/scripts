@@ -19,7 +19,7 @@ while True:
 
         # Receive the data in small chunks and retransmit it
         while True:
-            data = "bla\n"
+            data = "Server to bussy. Try later\n"
             if data:
                 print >>sys.stderr, 'sending data back to the client'
                 connection.sendall(data)
