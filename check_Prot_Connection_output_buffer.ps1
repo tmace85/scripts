@@ -1,29 +1,30 @@
 ﻿param( 
     [string] $remoteHost = "localhost", 
-    [int] $port = 10000
+    [int] $port = 100
      ) 
  
 try
 {
     $socket = new-object System.Net.Sockets.TcpClient($remoteHost, $port) 
+    $socket.ReceiveTimeout = 5000;
     if ($socket){
     $stream = $socket.GetStream() 
     $writer = new-object System.IO.StreamWriter($stream) 
  
     $buffer = new-object System.Byte[] 1024 
     $encoding = new-object System.Text.AsciiEncoding 
- 
-   
-          $read = $stream.Read($buffer, 0, 1024)    
+
+            
+
+          $read = $stream.Read($buffer, 0, 1024)               
           $Output= $encoding.GetString($buffer, 0, $read)
-         #write-host -n ($encoding.GetString($buffer, 0, $read))
-          if ($stream)
-          {
+         
+          $socket.close()
           $stream.close()  
           $writer.close()
-          $socket.Close()
-         }
-        }
+          exit 0 
+          
+       }  
          
 }
 catch{
@@ -35,18 +36,26 @@ finally
 {
 
  if ($ErrorMessage) {
- Write-Output "Warning - $ErrorMessage " 
- exit 1
+    if ($ErrorMessage -like "*Read*" ){
+    Write-Output "OK - No data of stream available" 
+    exit 0
+    }
+
+    else
+    {
+    Write-Output "Warning - $ErrorMessage " 
+    exit 1
+    }
  }
  else{
  
-if ($Output -like "OUTPUT*" ) {
-    write-output "Warning - "
+if ($Output -like "*" ) {
+    write-output "!"
     exit 1
 }
 else{
     
-    write-output "OK"
+    write-output "OK - $Output"
     exit 0
     
 } 
